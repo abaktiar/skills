@@ -1,0 +1,8 @@
+{
+  "name": "step-checklist-builder",
+  "description": "Turn any multi-step guide, runbook, setup procedure, SOP, onboarding doc, or ordered how-to into a single self-contained interactive HTML \"console\" — a dark, polished dashboard where the reader expands each step for a click-by-click walkthrough, ticks off each action (numbered badges flip to green checks), watches a live progress ring with done / pending / needs-help counts, filters by status, flags steps where they're stuck to reveal troubleshooting, and copies code blocks. Progress saves locally so they can return mid-task. Use this skill whenever the user wants to turn instructions, steps, a setup guide, a deployment/provisioning checklist, a runbook, an SOP, or an onboarding flow into a trackable, checkable web page.",
+  "version": "1.0.0",
+  "author": {
+    "name": "David Baktiar"
+  }
+}

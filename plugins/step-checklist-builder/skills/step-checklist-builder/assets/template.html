@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title><!--PAGETITLE-->Setup Console<!--/PAGETITLE--></title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0c0e12;--bg2:#10131a;--panel:#151a23;--panel2:#1b212c;
+    --line:#262d3a;--line2:#323b4d;--ink:#e8ebf2;--ink-dim:#9aa4b8;--ink-faint:#5f6a80;
+    --amber:#ff9d2e;--amber-soft:#ffb961;--mint:#3ddc97;--mint-deep:#1f9c6a;
+    --rose:#ff6b6b;--rose-soft:#ff9e9e;--blue:#5ab0ff;--shadow:0 18px 50px -20px rgba(0,0,0,.8);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'IBM Plex Sans',sans-serif;background:var(--bg);color:var(--ink);line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    background-image:linear-gradient(rgba(255,157,46,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,157,46,.025) 1px,transparent 1px);
+    background-size:46px 46px;background-attachment:fixed;
+  }
+  .wrap{max-width:1080px;margin:0 auto;padding:0 22px 120px}
+  header{padding:54px 0 30px;border-bottom:1px solid var(--line);margin-bottom:34px}
+  .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:var(--amber);display:flex;align-items:center;gap:10px}
+  .eyebrow::before{content:"";width:26px;height:1px;background:var(--amber)}
+  h1{font-family:'IBM Plex Serif',serif;font-size:clamp(34px,5.5vw,56px);font-weight:700;line-height:1.02;margin:16px 0 6px;letter-spacing:-.01em}
+  h1 .accent{color:var(--amber)}
+  .sub{color:var(--ink-dim);max-width:680px;font-size:15px}
+  .region-pill{display:inline-flex;align-items:center;gap:8px;margin-top:18px;font-family:'IBM Plex Mono',monospace;font-size:12px;background:var(--panel);border:1px solid var(--line2);padding:7px 14px;border-radius:999px;color:var(--ink-dim)}
+  .region-pill b{color:var(--ink)}
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--mint);box-shadow:0 0 10px var(--mint)}
+  .dash{position:sticky;top:0;z-index:50;margin:0 -22px 34px;padding:16px 22px;background:rgba(12,14,18,.82);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:26px;flex-wrap:wrap}
+  .ring-wrap{display:flex;align-items:center;gap:16px}
+  .ring{position:relative;width:62px;height:62px;flex:none}
+  .ring svg{transform:rotate(-90deg)}
+  .ring .track{stroke:var(--line2)}
+  .ring .bar{stroke:var(--amber);stroke-linecap:round;transition:stroke-dashoffset .6s cubic-bezier(.4,0,.2,1)}
+  .ring .pct{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:14px}
+  .ring-meta .big{font-family:'IBM Plex Mono',monospace;font-size:15px;font-weight:600}
+  .ring-meta .small{font-size:11px;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.12em;font-family:'IBM Plex Mono',monospace}
+  .stats{display:flex;gap:10px;margin-left:auto;flex-wrap:wrap}
+  .stat{display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:74px;padding:8px 14px;border-radius:11px;background:var(--panel);border:1px solid var(--line)}
+  .stat .n{font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:20px;line-height:1}
+  .stat .l{font-size:10px;text-transform:uppercase;letter-spacing:.14em;color:var(--ink-faint);margin-top:5px;font-family:'IBM Plex Mono',monospace}
+  .stat.done .n{color:var(--mint)}.stat.pending .n{color:var(--amber)}.stat.help .n{color:var(--rose)}
+  .filters{display:flex;gap:7px;width:100%;flex-wrap:wrap;margin-top:4px}
+  .filt{font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.06em;color:var(--ink-dim);background:transparent;border:1px solid var(--line2);padding:6px 13px;border-radius:999px;cursor:pointer;transition:.18s}
+  .filt:hover{border-color:var(--ink-faint);color:var(--ink)}
+  .filt.active{background:var(--amber);border-color:var(--amber);color:#1a1205;font-weight:600}
+  .filt .c{opacity:.6;margin-left:4px}
+  .group-label{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--ink-faint);margin:34px 0 14px;display:flex;align-items:center;gap:12px}
+  .group-label::after{content:"";flex:1;height:1px;background:var(--line)}
+  .step{background:var(--panel);border:1px solid var(--line);border-radius:16px;margin-bottom:14px;overflow:hidden;transition:.25s;position:relative}
+  .step::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--line2);transition:.25s}
+  .step:hover{border-color:var(--line2)}
+  .step.done{opacity:.72}.step.done::before{background:var(--mint)}
+  .step.help::before{background:var(--rose)}
+  .step.open{border-color:var(--amber);opacity:1}
+  .step-head{display:flex;align-items:center;gap:16px;padding:18px 20px;cursor:pointer;user-select:none}
+  .num{font-family:'IBM Plex Serif',serif;font-weight:700;font-size:26px;color:var(--ink-faint);min-width:46px;text-align:center;line-height:1;transition:.25s}
+  .step.done .num{color:var(--mint)}.step.help .num{color:var(--rose)}.step.open .num{color:var(--amber)}
+  .head-text{flex:1;min-width:0}
+  .head-text h3{font-size:16.5px;font-weight:600;letter-spacing:-.01em}
+  .step.done .head-text h3{text-decoration:line-through;text-decoration-color:var(--mint-deep);color:var(--ink-dim)}
+  .head-text .meta{font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--ink-faint);margin-top:3px;display:flex;gap:14px;flex-wrap:wrap}
+  .meta .time::before{content:"◷ ";color:var(--amber-soft)}
+  .badge{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:3px 9px;border-radius:999px;border:1px solid;white-space:nowrap}
+  .badge.optional{color:var(--blue);border-color:rgba(90,176,255,.4);background:rgba(90,176,255,.08)}
+  .badge.wait{color:var(--amber-soft);border-color:rgba(255,157,46,.4);background:rgba(255,157,46,.08)}
+  .chev{color:var(--ink-faint);transition:.25s;flex:none}
+  .step.open .chev{transform:rotate(180deg);color:var(--amber)}
+  .step-body{max-height:0;overflow:hidden;transition:max-height .4s ease}
+  .step-body-inner{padding:4px 20px 22px 82px;border-top:1px solid transparent}
+  .step.open .step-body-inner{border-top-color:var(--line)}
+  .step-body p{color:var(--ink-dim);font-size:14.5px;margin:14px 0}
+  .step-body p:first-child{margin-top:16px}
+  .step-body strong{color:var(--ink);font-weight:600}
+  .path{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--amber-soft);background:rgba(255,157,46,.07);border:1px solid rgba(255,157,46,.18);padding:2px 8px;border-radius:6px;display:inline-block}
+  .sec{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink);margin:22px 0 4px;padding-bottom:7px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:9px}
+  .sec .tag{color:var(--amber-soft)}
+  /* console walkthrough flow — each step is a checkbox; number is baked in (no CSS counter) */
+  .flow{list-style:none;margin:16px 0 6px}
+  .flow li{position:relative;padding:8px 8px 12px 40px;font-size:14px;color:var(--ink-dim);border-left:1px solid var(--line);margin-left:12px;border-radius:8px;cursor:pointer;transition:background .15s}
+  .flow li:hover{background:var(--panel2)}
+  .flow li:last-child{border-left-color:transparent;padding-bottom:4px}
+  .fbadge{position:absolute;left:-14px;top:5px;width:28px;height:28px;border-radius:50%;background:var(--panel2);border:1.6px solid var(--line2);display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;color:var(--amber-soft);transition:.18s}
+  .flow li:hover .fbadge{border-color:var(--amber-soft)}
+  .fbadge .ck{display:none;font-size:14px}
+  .flow li.checked .fbadge{background:var(--mint);border-color:var(--mint);color:#04130c}
+  .flow li.checked .fbadge .fnum{display:none}
+  .flow li.checked .fbadge .ck{display:block}
+  .flow li.checked{color:var(--ink-faint)}
+  .flow li.checked strong,.flow li.checked .pick,.flow li.checked u{color:var(--ink-faint);text-decoration:line-through;text-decoration-color:var(--mint-deep)}
+  .flow li.checked code{opacity:.55}
+  .flow li strong{color:var(--ink);font-weight:600}
+  .flow code{font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:var(--amber-soft);background:rgba(255,157,46,.08);padding:1px 6px;border-radius:5px}
+  .flow .pick{color:var(--mint);font-weight:600}
+  .code{background:var(--bg2);border:1px solid var(--line);border-radius:11px;margin:14px 0;overflow:hidden}
+  .code-top{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;background:rgba(255,255,255,.02);border-bottom:1px solid var(--line)}
+  .code-lang{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-faint)}
+  .copy{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--ink-dim);background:var(--panel2);border:1px solid var(--line2);padding:4px 11px;border-radius:7px;cursor:pointer;transition:.15s;display:flex;align-items:center;gap:6px}
+  .copy:hover{color:var(--ink);border-color:var(--ink-faint)}
+  .copy.copied{color:var(--mint);border-color:var(--mint-deep)}
+  .code pre{margin:0;padding:14px 16px;overflow-x:auto;font-family:'IBM Plex Mono',monospace;font-size:12.5px;line-height:1.6;color:#cdd6e6}
+  .code pre::-webkit-scrollbar{height:8px}
+  .code pre::-webkit-scrollbar-thumb{background:var(--line2);border-radius:4px}
+  .tbl{width:100%;border-collapse:collapse;margin:14px 0;font-size:13.5px}
+  .tbl th,.tbl td{text-align:left;padding:9px 12px;border:1px solid var(--line);vertical-align:top}
+  .tbl th{background:var(--panel2);font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-dim);font-weight:600}
+  .tbl td{color:var(--ink-dim)}
+  .tbl td:first-child{color:var(--ink);font-weight:500;white-space:nowrap}
+  .tbl td .pick{color:var(--mint);font-weight:600}
+  .note{display:flex;gap:12px;padding:13px 15px;border-radius:11px;margin:14px 0;background:rgba(255,157,46,.06);border:1px solid rgba(255,157,46,.2);font-size:13.5px;color:var(--amber-soft)}
+  .note.tip{background:rgba(61,220,151,.06);border-color:rgba(61,220,151,.22);color:var(--mint)}
+  .note .ico{flex:none;font-size:15px;line-height:1.4}
+  .actions{display:flex;gap:10px;margin-top:22px;padding-top:18px;border-top:1px dashed var(--line);flex-wrap:wrap}
+  .btn{font-family:'IBM Plex Mono',monospace;font-size:12.5px;font-weight:500;padding:10px 18px;border-radius:9px;cursor:pointer;border:1px solid;transition:.18s;display:flex;align-items:center;gap:8px}
+  .btn-done{background:transparent;border-color:var(--mint-deep);color:var(--mint)}
+  .btn-done:hover{background:rgba(61,220,151,.1)}
+  .step.done .btn-done{background:var(--mint);border-color:var(--mint);color:#04130c;font-weight:600}
+  .btn-help{background:transparent;border-color:var(--line2);color:var(--ink-dim)}
+  .btn-help:hover{border-color:var(--rose);color:var(--rose-soft)}
+  .step.help .btn-help{background:rgba(255,107,107,.12);border-color:var(--rose);color:var(--rose-soft)}
+  .helpbox{margin-top:14px;border:1px solid var(--rose);border-radius:11px;overflow:hidden;background:rgba(255,107,107,.05);display:none}
+  .step.help .helpbox{display:block;animation:slide .3s ease}
+  @keyframes slide{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+  .helpbox h4{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--rose-soft);padding:11px 15px;border-bottom:1px solid rgba(255,107,107,.25);display:flex;align-items:center;gap:8px}
+  .helpbox .hbody{padding:14px 15px;font-size:13.5px;color:var(--ink-dim)}
+  .helpbox .hbody ul{margin:8px 0 0 18px}
+  .helpbox .hbody li{margin:6px 0}
+  .flow-hint{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;color:var(--ink-faint);margin:18px 0 2px;display:flex;align-items:center;gap:8px}
+  .flow-hint .mini{font-size:11px;color:var(--mint)}
+  .complete-banner{display:none;text-align:center;padding:40px 24px;margin-bottom:28px;background:linear-gradient(135deg,rgba(61,220,151,.12),rgba(255,157,46,.08));border:1px solid var(--mint-deep);border-radius:18px}
+  .complete-banner.show{display:block;animation:slide .4s ease}
+  .complete-banner h2{font-family:'IBM Plex Serif',serif;font-size:28px;color:var(--mint)}
+  .complete-banner p{color:var(--ink-dim);margin-top:8px}
+  footer{margin-top:46px;padding-top:24px;border-top:1px solid var(--line);font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--ink-faint);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:center}
+  .reset{font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--ink-faint);background:transparent;border:1px solid var(--line);padding:7px 14px;border-radius:8px;cursor:pointer;transition:.15s}
+  .reset:hover{border-color:var(--rose);color:var(--rose-soft)}
+  @media (max-width:640px){.step-body-inner{padding-left:20px}.dash{gap:16px}.num{font-size:21px;min-width:34px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow"><!--EYEBROW-->Project · subtitle line<!--/EYEBROW--></div>
+    <h1><!--TITLE-->Setup <span class="accent">Console</span><!--/TITLE--></h1>
+    <p class="sub"><!--SUB-->One-line description of what this checklist walks the reader through.<!--/SUB--></p>
+    <div class="region-pill"><span class="dot"></span> <!--PILL-->Any key context · e.g. environment, est. time<!--/PILL--></div>
+  </header>
+
+  <div class="dash">
+    <div class="ring-wrap">
+      <div class="ring">
+        <svg width="62" height="62"><circle class="track" cx="31" cy="31" r="26" fill="none" stroke-width="6"/><circle class="bar" id="ring" cx="31" cy="31" r="26" fill="none" stroke-width="6"/></svg>
+        <div class="pct" id="ringPct">0%</div>
+      </div>
+      <div class="ring-meta"><div class="big" id="progressText">0 / 0 steps</div><div class="small">Overall progress</div></div>
+    </div>
+    <div class="stats">
+      <div class="stat done"><span class="n" id="cDone">0</span><span class="l">Done</span></div>
+      <div class="stat pending"><span class="n" id="cPending">0</span><span class="l">Pending</span></div>
+      <div class="stat help"><span class="n" id="cHelp">0</span><span class="l">Need help</span></div>
+    </div>
+    <div class="filters" id="filters">
+      <button class="filt active" data-f="all">All <span class="c" id="fAll">0</span></button>
+      <button class="filt" data-f="pending">Pending <span class="c" id="fPend">0</span></button>
+      <button class="filt" data-f="done">Done <span class="c" id="fDone">0</span></button>
+      <button class="filt" data-f="help">Need help <span class="c" id="fHelp">0</span></button>
+      <button class="filt" data-f="wait">Has wait time <span class="c" id="fWait">0</span></button>
+    </div>
+  </div>
+
+  <div class="complete-banner" id="banner">
+    <h2>✓ All steps complete</h2>
+    <p><!--DONEMSG-->All steps complete.<!--/DONEMSG--></p>
+  </div>
+
+  <div id="steps"></div>
+
+  <footer>
+    <span><!--FOOTER-->Your checklist · progress saved locally on this device<!--/FOOTER--></span>
+    <button class="reset" id="reset">⟲ Reset all progress</button>
+  </footer>
+</div>
+
+<script>
+/* ============ DATA ============
+   Detail block types:
+   {t:'sec', tag, label}              section header
+   {t:'p', html}                      paragraph
+   {t:'flow', items:[html,...]}       numbered console walkthrough
+   {t:'tbl', head:[], rows:[[]]}      field/value table
+   {t:'code', lang, code}             copyable code
+   {t:'note', k:'tip'|'', html}       callout
+============================================ */
+/* =================================================================
+   ====================  BEGIN DATA — EDIT THIS  ===================
+   Replace the STEPS array and HELP map below with content for your
+   topic. Keep the CSS/JS engine above and below UNCHANGED.
+   See references/data-format.md for the full block reference.
+   Block types inside details[]:
+     {t:'sec', tag:'2.1', label:'Section name'}        sub-section header
+     {t:'p',   html:'paragraph, may use <b> <code> etc.'}
+     {t:'flow',items:['action 1','action 2', ...]}     numbered, CHECKABLE walkthrough
+     {t:'tbl', head:['Field','Value'], rows:[['a','b']]}
+     {t:'code',lang:'bash', code:'literal code, copy button added'}
+     {t:'note',k:'tip'|'', html:'callout text'}
+   Step shape:
+     {g:'Group name', num:'01', title:'...', time:'10 min',
+      tags:['wait'|'optional'], details:[ ...blocks ]}
+     - g       groups steps under a heading (reuse the same string to group)
+     - num     the big left-hand number (any string: '00','01',...)
+     - tags    optional: 'wait' adds a "Has wait time" badge + filter, 'optional' a blue badge
+   Highlights inside flow/p html:
+     <span class='pick'>chosen value</span>   green emphasis for what to select
+     <code>literal</code>  <strong>label</strong>  <span class='path'>nav path</span>
+   HELP map: keyed by step num; shows a troubleshooting panel when the
+   reader taps "Need help here" on that step. Optional.
+   ================================================================= */
+const STEPS = [
+{g:"Getting started", num:"00", title:"Prerequisites", time:"setup", details:[
+  {t:'p',html:"Short intro line for this step."},
+  {t:'flow',items:[
+    "First thing to confirm or install.",
+    "Second thing — choose <span class='pick'>this option</span>.",
+    "Open <span class='path'>Menu → Submenu</span> and continue."
+  ]},
+  {t:'note',k:'tip',html:"A helpful tip shows in a green callout."}
+]},
+{g:"Main steps", num:"01", title:"Do the first real task", time:"10 min", tags:["wait"], details:[
+  {t:'sec',tag:'1.1',label:'A labelled sub-section'},
+  {t:'flow',items:[
+    "Numbered, tickable action. Tap its number to check it off.",
+    "Another action; set the field to <span class='pick'>Symmetric</span>."
+  ]},
+  {t:'tbl',head:["Setting","Value"],rows:[
+    ["Name","example-name"],
+    ["Type","<span class='pick'>Standard</span>"]
+  ]},
+  {t:'code',lang:'bash',code:'echo "copyable code block"'},
+  {t:'note',k:'',html:"A neutral callout (amber) for an important aside."}
+]}
+];
+
+const HELP = {
+  "01":["<b>Common error</b> → how to fix it.","<b>Another symptom</b> → the remedy."]
+};
+/* ====================  END DATA — EDIT THIS  =====================
+   Everything below is the rendering engine. Leave it unchanged. */
+
+/* ============ RENDER ============ */
+const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const stepsEl = document.getElementById('steps');
+let state = load();
+let filter = 'all';
+
+function load(){ try{ return JSON.parse(localStorage.getItem('checklist_progress_v1'))||{}; }catch(e){ return {}; } }
+function save(){ try{ localStorage.setItem('checklist_progress_v1', JSON.stringify(state)); }catch(e){} }
+function st(num){ if(!state[num]) state[num]={done:false,help:false,tasks:{}}; return state[num]; }
+function flowCount(s){ return (s.details||[]).filter(b=>b.t==='flow').reduce((a,b)=>a+b.items.length,0); }
+function flowDone(s){ const ss=st(s.num); let n=0; for(let i=0;i<flowCount(s);i++) if(ss.tasks[i]) n++; return n; }
+
+function renderBlock(b,num,ctr){
+  if(b.t==='p') return `<p>${b.html}</p>`;
+  if(b.t==='sec') return `<div class="sec">${b.tag?`<span class="tag">${b.tag}</span>`:''}${b.label}</div>`;
+  if(b.t==='note') return `<div class="note ${b.k==='tip'?'tip':''}"><span class="ico">${b.k==='tip'?'💡':'›'}</span><div>${b.html}</div></div>`;
+  if(b.t==='flow') return `<ol class="flow">${b.items.map(i=>{
+      const idx=ctr.i++; const ck=st(num).tasks[idx]?'checked':'';
+      return `<li class="fstep ${ck}" data-num="${num}" data-task="${idx}"><span class="fbadge"><span class="fnum">${idx+1}</span><span class="ck">✓</span></span>${i}</li>`;
+    }).join('')}</ol>`;
+  if(b.t==='code') return `<div class="code"><div class="code-top"><span class="code-lang">${b.lang||'code'}</span><button class="copy" data-code="${encodeURIComponent(b.code)}">⧉ copy</button></div><pre>${esc(b.code)}</pre></div>`;
+  if(b.t==='tbl'){
+    const head=b.head.map(h=>`<th>${h}</th>`).join('');
+    const rows=b.rows.map(r=>`<tr>${r.map(c=>`<td>${c||'·'}</td>`).join('')}</tr>`).join('');
+    return `<table class="tbl"><thead><tr>${head}</tr></thead><tbody>${rows}</tbody></table>`;
+  }
+  return '';
+}
+function renderTags(tags){ if(!tags) return ''; return tags.map(t=> t==='optional'?`<span class="badge optional">Optional</span>`:`<span class="badge wait">Has wait time</span>`).join(''); }
+
+function render(){
+  let html='',lastGroup='';
+  STEPS.forEach(s=>{
+    if(s.g!==lastGroup){ html+=`<div class="group-label">${s.g}</div>`; lastGroup=s.g; }
+    const ss=st(s.num);
+    const cls=[ss.done?'done':'',ss.help?'help':''].join(' ');
+    const ctr={i:0};
+    const details=(s.details||[]).map(b=>renderBlock(b,s.num,ctr)).join('');
+    const total=flowCount(s), dn=flowDone(s);
+    const hint=total?`<div class="flow-hint">Tap each step's number to tick it off &nbsp;·&nbsp; <span class="mini" data-hint="${s.num}">${dn} / ${total} done</span></div>`:'';
+    const helpItems=HELP[s.num]?`<div class="helpbox"><h4>⚑ If you're stuck on this step</h4><div class="hbody"><ul>${HELP[s.num].map(h=>`<li>${h}</li>`).join('')}</ul></div></div>`:'';
+    html+=`<div class="step ${cls}" data-num="${s.num}">
+      <div class="step-head" data-toggle="${s.num}">
+        <div class="num">${s.num}</div>
+        <div class="head-text"><h3>${s.title}</h3><div class="meta"><span class="time">${s.time}</span>${renderTags(s.tags)}</div></div>
+        <svg class="chev" width="16" height="16" viewBox="0 0 16 16"><path d="M3 6l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="step-body"><div class="step-body-inner">
+        ${hint}
+        ${details}
+        ${helpItems}
+        <div class="actions">
+          <button class="btn btn-done" data-done="${s.num}">${ss.done?'✓ Done':'Mark all done'}</button>
+          <button class="btn btn-help" data-help="${s.num}">${ss.help?'⚑ Flagged — clear':'Need help here'}</button>
+        </div>
+      </div></div>
+    </div>`;
+  });
+  stepsEl.innerHTML=html;
+  applyFilter(); updateDash();
+}
+
+function updateDash(){
+  const total=STEPS.length; let done=0,help=0;
+  STEPS.forEach(s=>{const ss=st(s.num);if(ss.done)done++;if(ss.help)help++;});
+  const pending=total-done, pct=Math.round(done/total*100);
+  document.getElementById('cDone').textContent=done;
+  document.getElementById('cPending').textContent=pending;
+  document.getElementById('cHelp').textContent=help;
+  document.getElementById('progressText').textContent=`${done} / ${total} steps`;
+  document.getElementById('ringPct').textContent=pct+'%';
+  const ring=document.getElementById('ring'),circ=2*Math.PI*26;
+  ring.style.strokeDasharray=circ; ring.style.strokeDashoffset=circ*(1-done/total);
+  ring.style.stroke=pct===100?'var(--mint)':'var(--amber)';
+  document.getElementById('fAll').textContent=total;
+  document.getElementById('fPend').textContent=pending;
+  document.getElementById('fDone').textContent=done;
+  document.getElementById('fHelp').textContent=help;
+  document.getElementById('fWait').textContent=STEPS.filter(s=>s.tags&&s.tags.includes('wait')).length;
+  document.getElementById('banner').classList.toggle('show',done===total);
+}
+function applyFilter(){
+  document.querySelectorAll('.step').forEach(el=>{
+    const num=el.dataset.num,ss=st(num),s=STEPS.find(x=>x.num===num);
+    let show=true;
+    if(filter==='pending')show=!ss.done;
+    else if(filter==='done')show=ss.done;
+    else if(filter==='help')show=ss.help;
+    else if(filter==='wait')show=!!(s.tags&&s.tags.includes('wait'));
+    el.style.display=show?'':'none';
+  });
+}
+stepsEl.addEventListener('click',e=>{
+  const toggle=e.target.closest('[data-toggle]'),fstep=e.target.closest('.fstep'),
+        doneBtn=e.target.closest('[data-done]'),helpBtn=e.target.closest('[data-help]'),copy=e.target.closest('.copy');
+  if(copy){ e.stopPropagation();
+    navigator.clipboard.writeText(decodeURIComponent(copy.dataset.code)).then(()=>{
+      copy.textContent='✓ copied'; copy.classList.add('copied');
+      setTimeout(()=>{copy.textContent='⧉ copy';copy.classList.remove('copied');},1500);
+    }); return; }
+  if(fstep){ const num=fstep.dataset.num,ti=fstep.dataset.task,ss=st(num),s=STEPS.find(x=>x.num===num);
+    ss.tasks[ti]=!ss.tasks[ti]; fstep.classList.toggle('checked',ss.tasks[ti]);
+    const all=flowDone(s)===flowCount(s);
+    if(all!==ss.done){ ss.done=all; }
+    refreshStep(num); save(); updateDash(); return; }
+  if(doneBtn){ e.stopPropagation(); const num=doneBtn.dataset.done,ss=st(num),s=STEPS.find(x=>x.num===num);
+    ss.done=!ss.done;
+    for(let i=0;i<flowCount(s);i++) ss.tasks[i]=ss.done;   // tick / untick every walkthrough item
+    refreshStep(num); save(); updateDash(); if(filter!=='all')applyFilter(); return; }
+  if(helpBtn){ e.stopPropagation(); const num=helpBtn.dataset.help,ss=st(num);
+    ss.help=!ss.help; refreshStep(num); save(); updateDash();
+    const el=document.querySelector(`.step[data-num="${num}"]`);
+    if(ss.help&&!el.classList.contains('open'))toggleStep(num,true); return; }
+  if(toggle){ toggleStep(toggle.dataset.toggle); }
+});
+function toggleStep(num,force){
+  const el=document.querySelector(`.step[data-num="${num}"]`),body=el.querySelector('.step-body');
+  const open=force===true?true:!el.classList.contains('open');
+  el.classList.toggle('open',open);
+  body.style.maxHeight=open?body.scrollHeight+60+'px':'0';
+}
+function refreshStep(num){
+  const el=document.querySelector(`.step[data-num="${num}"]`),ss=st(num),s=STEPS.find(x=>x.num===num);
+  el.classList.toggle('done',ss.done); el.classList.toggle('help',ss.help);
+  el.querySelectorAll('.fstep').forEach(li=>li.classList.toggle('checked',!!ss.tasks[li.dataset.task]));
+  const hint=el.querySelector('[data-hint]'); if(hint) hint.textContent=`${flowDone(s)} / ${flowCount(s)} done`;
+  el.querySelector('[data-done]').textContent=ss.done?'✓ Done':'Mark all done';
+  el.querySelector('[data-help]').textContent=ss.help?'⚑ Flagged — clear':'Need help here';
+  if(el.classList.contains('open')){ const body=el.querySelector('.step-body'); setTimeout(()=>{body.style.maxHeight=body.scrollHeight+60+'px';},10); }
+}
+document.getElementById('filters').addEventListener('click',e=>{
+  const b=e.target.closest('.filt'); if(!b)return;
+  filter=b.dataset.f;
+  document.querySelectorAll('.filt').forEach(f=>f.classList.toggle('active',f===b));
+  applyFilter();
+});
+document.getElementById('reset').addEventListener('click',()=>{
+  if(confirm('Reset all progress on this device? This cannot be undone.')){ state={}; save(); render(); }
+});
+render();
+</script>
+</body>
+</html>

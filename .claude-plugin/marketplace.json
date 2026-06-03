@@ -1,0 +1,14 @@
+{
+  "name": "david-skills",
+  "owner": {
+    "name": "David Baktiar"
+  },
+  "description": "Personal marketplace of Claude Code / Claude Desktop plugins.",
+  "plugins": [
+    {
+      "name": "step-checklist-builder",
+      "source": "./plugins/step-checklist-builder",
+      "description": "Turn any multi-step guide, runbook, SOP, or onboarding doc into a self-contained interactive HTML checklist console with progress tracking, troubleshooting panels, and copy buttons."
+    }
+  ]
+}
