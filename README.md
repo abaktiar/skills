@@ -1,8 +1,12 @@
-# david-skills — a personal Claude plugin marketplace
+# abaktiar-skills — a personal Claude plugin marketplace
 
-A small [Claude Code plugin marketplace](https://code.claude.com/docs/en/plugin-marketplaces)
+A [Claude Code plugin marketplace](https://code.claude.com/docs/en/plugin-marketplaces)
 (just a git repo) that distributes my Claude skills as installable plugins. Plugins
 installed from here work in **both Claude Code (CLI/IDE) and the Claude Desktop app**.
+
+- **Marketplace name:** `abaktiar-skills`
+- **Repo:** `abaktiar/skills` (https://github.com/abaktiar/skills)
+- **Owner:** Al baktiar
 
 ## Plugins in this marketplace
 
@@ -10,61 +14,44 @@ installed from here work in **both Claude Code (CLI/IDE) and the Claude Desktop 
 
 Turns any multi-step guide, runbook, setup procedure, SOP, onboarding doc, or ordered
 how-to into a **single self-contained interactive HTML "console"** — a dark, polished
-dashboard where the reader:
-
-- expands each step for a click-by-click walkthrough,
-- ticks off each action (numbered badges flip to green checks),
-- watches a live progress ring with done / pending / needs-help counts,
-- filters steps by status,
-- flags steps they're stuck on to reveal troubleshooting,
-- and copies code blocks with one click.
-
-Progress is saved in `localStorage`, so the reader can leave and return mid-task. The
-skill is **model-invoked**: Claude triggers it automatically when you ask to turn
-instructions into a checklist/tracker page (e.g. "make a checklist page", "turn this
-runbook into something I can walk through", "build me a setup tracker").
+dashboard where the reader expands each step, ticks off each action (numbered badges flip
+to green checks), watches a live progress ring (done / pending / needs-help), filters by
+status, flags steps they're stuck on to reveal troubleshooting, and copies code blocks.
+Progress is saved in `localStorage`. Model-invoked: Claude triggers it automatically when
+you ask to turn instructions into a checklist/tracker page.
 
 ## Install
 
 > Requires Claude Code v2.1.x or later (`claude --version`).
 
-**From this published repo (recommended):**
-
 ```bash
 # Add the marketplace (GitHub owner/repo shorthand)
-claude plugin marketplace add <your-github-username>/<repo>
+claude plugin marketplace add abaktiar/skills
 
 # Install the plugin
-claude plugin install step-checklist-builder@david-skills
+claude plugin install step-checklist-builder@abaktiar-skills
 ```
 
-Or, inside an interactive Claude Code session, use the slash equivalents:
+Inside an interactive Claude Code session, the slash equivalents are
+`/plugin marketplace add abaktiar/skills` then `/plugin install <plugin>@abaktiar-skills`.
+Run `/skills` (or `/plugin`) to confirm they loaded.
 
-```text
-/plugin marketplace add <your-github-username>/<repo>
-/plugin install step-checklist-builder@david-skills
-```
-
-After installing, run `/skills` (or `/plugin`) to confirm it loaded. The skill then
-triggers automatically, or you can invoke it explicitly with
-`/step-checklist-builder:step-checklist-builder`.
-
-**Claude Desktop app:** add the same marketplace from the app's plugin/marketplace
-settings (Settings → Plugins/Marketplaces → add `<your-github-username>/<repo>`), then
-install `step-checklist-builder`. Because the marketplace is a public git repo, the same
-source works across Claude Code and Desktop.
+**Claude Desktop app:** add the same marketplace from Settings → Plugins/Marketplaces
+(`abaktiar/skills`), then install the plugin(s). Because the marketplace is a git repo, the
+same source works across Claude Code and Desktop.
 
 ## Local development / testing
 
 ```bash
-# Validate the marketplace + plugin manifests
+# Validate the marketplace + each plugin manifest
 claude plugin validate ./my-marketplace
+claude plugin validate ./my-marketplace/plugins/step-checklist-builder
 
-# Add the marketplace from a local path and install
+# Add from a local path and install
 claude plugin marketplace add ./my-marketplace
-claude plugin install step-checklist-builder@david-skills
+claude plugin install step-checklist-builder@abaktiar-skills
 
-# Iterate without installing
+# Iterate on one plugin without installing
 claude --plugin-dir ./my-marketplace/plugins/step-checklist-builder
 ```
 
@@ -73,24 +60,20 @@ claude --plugin-dir ./my-marketplace/plugins/step-checklist-builder
 ```
 my-marketplace/
 ├── .claude-plugin/
-│   └── marketplace.json                 # registers the plugin(s) below
+│   └── marketplace.json                     # registers the plugin below
 └── plugins/
     └── step-checklist-builder/
-        ├── .claude-plugin/
-        │   └── plugin.json              # plugin manifest (name/description/version)
-        └── skills/
-            └── step-checklist-builder/  # the skill, copied intact
-                ├── SKILL.md
-                ├── assets/template.html
-                └── references/data-format.md
+        ├── .claude-plugin/plugin.json
+        └── skills/step-checklist-builder/    # skill, copied intact
+            ├── SKILL.md
+            ├── assets/template.html
+            └── references/data-format.md
 ```
 
-## Note on output paths
+## Notes
 
-`SKILL.md` writes its finished HTML to the Claude.ai sandbox locations
-(`/home/claude/…`, `/mnt/user-data/outputs/`) and presents it with `present_files`.
-Those are conveniences of the Claude.ai / Desktop sandbox. In a plain Claude Code CLI
-session those paths may not exist — Claude will simply write the generated `.html` to
-your working directory instead. The skill's own bundled references
-(`assets/template.html`, `references/data-format.md`) are relative, so the skill is
-fully portable.
+- **`step-checklist-builder` output paths.** `SKILL.md` writes its finished HTML to the
+  Claude.ai sandbox locations (`/home/claude/…`, `/mnt/user-data/outputs/`). Those are
+  conveniences of the Claude.ai / Desktop sandbox; in a plain Claude Code CLI session
+  Claude simply writes the generated `.html` to your working directory. The skill's bundled
+  references are relative, so the skill is fully portable.
